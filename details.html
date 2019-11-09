@@ -1,0 +1,93 @@
+<html>
+
+<head>
+    <title>Movie Details</title>
+    <link rel="stylesheet" href="css/details.css"/>
+    <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Rancho&effect=fire-animation" />
+    <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Rancho&effect=ice" />
+
+</head>
+
+<body>
+    <center>
+        <h2 id="pTitle" class="font-effect-ice">MovieWiki</h2>
+    </center>
+    <div class="main">
+            <h1 id="movie" class="font-effect-fire-animation"></h1>
+        <div class="moviedetails">
+            <!-- contains movie details -->
+            
+            <h2 class="text" id="date"></h2>
+            <h2 id="rated" class="text"></h2>
+            <h2 id="runtime" class="text"></h2>
+            <h2 id="genre" class="text"></h2>
+            <h2 id="director" class="text"></h2>
+            <h2 id="genre" class="text"></h2>
+            <h2 id="cast" class="text"></h2>
+            <h2 id="lang" class="text"></h2>
+            <h2 id="rating1" class="text"></h2>
+            <h2 id="rating2" class="text"></h2>
+        </div>
+        <div id="img" class="imgdiv">
+        </div>
+        <div class="moviedetails" id="plt"><h2 id="plot" class="text"></h2></div>
+    
+    </div>
+
+    <script>
+        window.onload = function () {
+            //gets the movie name from previous page
+            var parameters = location.search.substring(1).split("&");
+            var temp = parameters[0].split("=");
+            mName = unescape(temp[1]);
+            const url = "http://www.omdbapi.com/?i=tt3896198&apikey=b5cad897&t=" + mName +"&plot=full";
+            fetch(url)
+                .then(handleErrors)
+                .then((resp) => resp.json())
+                .then(function (data) {
+                   
+                //Appends the data to the respective HTML element
+                    document.getElementById("movie").innerHTML = data.Title;
+                    document.getElementById("date").innerHTML = "Release Date : " + data.Released;
+                    document.getElementById("rated").innerHTML = "Rated : " + data.Rated;
+                    document.getElementById("runtime").innerHTML = "Runtime : " + data.Runtime;
+                    document.getElementById("genre").innerHTML = "Genre : " + data.Genre;
+                    document.getElementById("director").innerHTML = "Director : " + data.Director;
+                    document.getElementById("cast").innerHTML = "Cast : " + data.Actors;
+                    document.getElementById("lang").innerHTML = "Language : " + data.Language;
+                    document.getElementById("rating1").innerHTML = "Ratings : " + data.Ratings[0].Source +
+                        " : " + data.Ratings[0].Value;
+                    document.getElementById("rating2").innerHTML = "Ratings : " + data.Ratings[1].Source +
+                        " : " + data.Ratings[1].Value;
+                    document.getElementById("img").style.backgroundImage = "url(" + data.Poster + ")";;
+                    document.getElementById("plot").innerHTML = "Plot : " + data.Plot;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+
+    //To handle 404 errors. Prints "No Results found" when no movie matches with given query
+        function handleErrors(response) {   
+            if (!response.ok) {
+                var main = document.getElementsByClassName("main"); 
+                while (main[0].firstChild) {
+                    main[0].removeChild(main[0].firstChild);
+                }
+                var p = document.createElement("H5");
+                var center = document.createElement("center");
+                var textnode = document.createTextNode("No Results found...");
+                p.appendChild(textnode);
+                center.append(p);
+                main[0].append(center);
+
+
+                throw Error(response.statusText);
+            }
+            return response;
+        }
+    </script>
+</body>
+</html>

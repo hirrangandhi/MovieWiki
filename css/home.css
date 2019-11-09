@@ -1,0 +1,28 @@
+body{
+    background-image: url(../images/bg.jpg);
+    background-blend-mode: lighten;
+    padding-top: 200px;
+
+}
+
+#pTitle {
+    float: center;
+    color: rgba(255, 0, 0, 0.753);
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    letter-spacing: 2px;
+    font-size: 36px;
+}
+
+
+ #search{
+    width: 20%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    background-color: #f8f8f8;
+    resize: none;
+ }
+
+ 

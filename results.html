@@ -1,0 +1,118 @@
+<html>
+
+<head>
+  <title>Search Results</title>
+  <link rel="stylesheet" href="css/results.css" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Rancho&effect=ice" />
+</head>
+
+<body>
+  <center>
+    <h2 id="pTitle" class="font-effect-ice">MovieWiki</h2>
+
+  <div>
+    <div class="main"></div>
+    </br>
+    <!-- Button to return back to previous page-->
+    <button id="btn" type="button" value="Go back!" onclick="history.back()" class="button">Go Back</button>
+  </div>  
+    <div class="error"></div>
+    <br/>
+  </center>
+  </body>
+
+<script>
+  window.onload = function () {
+    myFunction();
+  }
+
+  //To handle 404 errors. Prints "No Results found" when no movie matches with given query
+  function handleErrors(response) {  
+    if (!response.ok) {
+      var main = document.getElementsByClassName("main");
+      while (main[0].firstChild) {
+        main[0].removeChild(main[0].firstChild);
+      }
+      var p = document.createElement("H5");
+      var center = document.createElement("center");
+      var textnode = document.createTextNode("Movie not found");
+      p.appendChild(textnode);
+      center.append(p);
+      main[0].append(center);
+
+
+      throw Error(response.statusText);
+    }
+    return response;
+  }
+
+
+
+  function myFunction() {
+    var main = document.getElementsByClassName("main");
+    //gets the movie name from previous page
+    var parameters = location.search.substring(1).split("&");  
+    var temp = parameters[0].split("=");
+    mName = unescape(temp[1]);
+    
+    //appends the movie name to API call
+    const url = "http://www.omdbapi.com/?i=tt3896198&apikey=b5cad897&t=" + mName;
+     //console.log(mName);
+    fetch(url)
+      .then(handleErrors)
+      .then((resp) => resp.json())
+      .then(function (data) {
+         
+       if(data.Response == "False"){
+        var error = document.getElementsByClassName("error");
+        var node = document.createElement("H3");
+        var textnode=document.createTextNode(data.Error);
+        node.appendChild(textnode);
+        error[0].appendChild(node);
+        // console.log("No ressults");
+       }
+
+       else{
+        //creates a card for the movie
+        var row = document.createElement("div");   
+        //for (i in data) {                                      
+        var col = document.createElement("div");
+        var div = document.createElement("div");
+        var imdiv = document.createElement("div");
+        var a = document.createElement("A");
+        row.className = "row";
+        col.className = "column";
+        div.className = "card ";
+        imdiv.className = "imgcls";
+
+        //Retrives values from JSON file and append it to the HTMl file
+        var node = document.createElement("H3");
+        var textnode = document.createTextNode(data.Title);
+        node.appendChild(textnode);    
+        a.append(node);
+
+        main[0].appendChild(row);
+        row.appendChild(col);
+        col.appendChild(div);
+        div.appendChild(a);
+        a.appendChild(imdiv);
+        //CSS for the movie poster
+        imdiv.style.backgroundImage = "url(" + data.Poster + ")";  
+        imdiv.style.backgroundPosition = "right";
+        imdiv.style.backgroundSize = "200px 200px";
+        imdiv.style.height = "200px";
+        imdiv.style.width = "200px";
+
+        a.href = "details.html?cname=" + data.Title;;
+       }
+        
+        //} 
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+</script>
+
+</html>
